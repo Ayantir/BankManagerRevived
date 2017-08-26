@@ -935,34 +935,38 @@ function BankManagerRules.addFilters()
 	
 	-- Raw Sytles
 	
-	for styleId, data in pairs(BankManagerRules.static.rawStyles) do
+	for styleItemIndex, data in pairs(BankManagerRules.static.rawStyles) do
 	
-		ruleName = "styleRaw" .. styleId
+		ruleName = "styleRaw" .. styleItemIndex
 		BankManagerRules.data[ruleName] = {
 			params = {
 				{func = GetItemLinkItemType, funcArgs = BMR_ITEMLINK, values = {ITEMTYPE_RAW_MATERIAL}},
 				{func = GetItemLinkItemId, funcArgs = BMR_ITEMLINK, values = {GetItemLinkItemId(data)}},
 			},
-			name = zo_strformat("<<1>> (<<2>>)", GetString("SI_ITEMSTYLE", styleId), GetItemLinkName(data)),
-			tooltip = zo_strformat("<<1>> (<<2>>)", GetString("SI_ITEMSTYLE", styleId), GetItemLinkName(data)),
+			name = zo_strformat("<<1>> (<<2>>)", GetItemStyleName(styleItemIndex), GetItemLinkName(data)),
+			tooltip = zo_strformat("<<1>> (<<2>>)", GetItemStyleName(styleItemIndex), GetItemLinkName(data)),
 		}
 	
-	end	
+	end
 	
 	-- Refeined Styles
-   for stylesItemIndex = 1, GetNumSmithingStyleItems() do
-		local itemName, _, _, meetsUsageRequirement, itemStyle = GetSmithingStyleItemInfo(stylesItemIndex)
+   for styleItemIndex = 1, GetHighestItemStyleId() do
+	
+		local styleItemLink = GetItemStyleMaterialLink(styleItemIndex)
+		local itemName = GetItemLinkName(styleItemLink)
+		local _, _, meetsUsageRequirement = GetItemLinkInfo(styleItemLink)
+		
       if meetsUsageRequirement then
 			
-			ruleName = "style" .. itemStyle
-			d(stylesItemIndex .. " : " .. itemName .. " : " .. GetString("SI_ITEMSTYLE", itemStyle))
+			ruleName = "style" .. styleItemIndex
+			
 			BankManagerRules.data[ruleName] = {
 				params = {
 					{func = GetItemLinkItemType, funcArgs = BMR_ITEMLINK, values = {ITEMTYPE_STYLE_MATERIAL}},
-					{func = GetItemLinkItemStyle, funcArgs = BMR_ITEMLINK, values = {itemStyle}},
+					{func = GetItemLinkItemStyle, funcArgs = BMR_ITEMLINK, values = {styleItemIndex}},
 				},
-				name = zo_strformat("<<1>> (<<2>>)", GetString("SI_ITEMSTYLE", itemStyle), zo_strformat(SI_TOOLTIP_ITEM_NAME, itemName)),
-				tooltip = zo_strformat("<<1>> (<<2>>)", GetString("SI_ITEMSTYLE", itemStyle), zo_strformat(SI_TOOLTIP_ITEM_NAME, itemName)),
+				name = zo_strformat("<<1>> (<<2>>)", GetItemStyleName(styleItemIndex), zo_strformat(SI_TOOLTIP_ITEM_NAME, itemName)),
+				tooltip = zo_strformat("<<1>> (<<2>>)", GetItemStyleName(styleItemIndex), zo_strformat(SI_TOOLTIP_ITEM_NAME, itemName)),
 			}
 			
 		end
@@ -1611,8 +1615,8 @@ function BankManagerRules.addFilters()
 			{func = GetItemLinkItemType, funcArgs = BMR_ITEMLINK, values = {ITEMTYPE_FURNISHING_MATERIAL}},
 			{func = GetItemLinkSpecializedItemType, funcArgs = BMR_ITEMLINK, values = {SPECIALIZED_ITEMTYPE_FURNISHING_MATERIAL_PROVISIONING, SPECIALIZED_ITEMTYPE_FURNISHING_MATERIAL_ENCHANTING, SPECIALIZED_ITEMTYPE_FURNISHING_MATERIAL_CLOTHIER, SPECIALIZED_ITEMTYPE_FURNISHING_MATERIAL_BLACKSMITHING, SPECIALIZED_ITEMTYPE_FURNISHING_MATERIAL_ALCHEMY}},
 		},
-		name = GetString("SI_ITEMTYPE", ITEMTYPE_INGREDIENT),
-		tooltip = GetString("SI_ITEMTYPE", ITEMTYPE_INGREDIENT),
+		name = GetString("SI_ITEMTYPE", ITEMTYPE_FURNISHING_MATERIAL),
+		tooltip = GetString("SI_ITEMTYPE", ITEMTYPE_FURNISHING_MATERIAL),
 	}
 	
 end

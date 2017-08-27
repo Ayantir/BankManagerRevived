@@ -6,7 +6,7 @@
 
 ## Title: BankManagerRevived
 ## APIVersion: 100020
-## Version: 10
+## Version: 10.1
 ## Author: Ayantir & |c990000Snowman|r|cFFFFFFDK|r
 ## Description: Manage your Banks with automated push/pull
 ## SavedVariables: BMVars

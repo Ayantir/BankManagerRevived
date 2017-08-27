@@ -907,6 +907,21 @@ function BankManagerRules.addFilters()
 	BankManagerRules.defaults[ruleName].keepNothing = false -- If slider is 0, is action to pull all at bank or it's just unset ?
 	BankManagerRules.defaults[ruleName].keepInBank = false -- If user prefer to Keep the desired amount in bank
 	
+	-- Special rule (currency)
+	ruleName = "currency" .. CURT_WRIT_VOUCHERS
+	BankManagerRules.data[ruleName] = {
+		currencyType = CURT_WRIT_VOUCHERS, -- Currency to move
+		min = 0, -- Used by LAM
+		max = 5000,
+		step = 25,
+	}
+	
+	BankManagerRules.defaults[ruleName] = {}
+	BankManagerRules.defaults[ruleName].qtyToPull = 0
+	BankManagerRules.defaults[ruleName].qtyToPush = 0
+	BankManagerRules.defaults[ruleName].keepNothing = false -- If slider is 0, is action to pull all at bank or it's just unset ?
+	BankManagerRules.defaults[ruleName].keepInBank = false -- If user prefer to Keep the desired amount in bank
+	
 	-- To get an exemple of correct definition, please look at addFiltersTaggedAll()
 
 	-- Traits
@@ -1613,7 +1628,6 @@ function BankManagerRules.addFilters()
 	BankManagerRules.data[ruleName] = {
 		params = {
 			{func = GetItemLinkItemType, funcArgs = BMR_ITEMLINK, values = {ITEMTYPE_FURNISHING_MATERIAL}},
-			{func = GetItemLinkSpecializedItemType, funcArgs = BMR_ITEMLINK, values = {SPECIALIZED_ITEMTYPE_FURNISHING_MATERIAL_PROVISIONING, SPECIALIZED_ITEMTYPE_FURNISHING_MATERIAL_ENCHANTING, SPECIALIZED_ITEMTYPE_FURNISHING_MATERIAL_CLOTHIER, SPECIALIZED_ITEMTYPE_FURNISHING_MATERIAL_BLACKSMITHING, SPECIALIZED_ITEMTYPE_FURNISHING_MATERIAL_ALCHEMY}},
 		},
 		name = GetString("SI_ITEMTYPE", ITEMTYPE_FURNISHING_MATERIAL),
 		tooltip = GetString("SI_ITEMTYPE", ITEMTYPE_FURNISHING_MATERIAL),

@@ -108,6 +108,11 @@ SafeAddString(BMR_ACTION_NOTSET								, "-", 1)
 SafeAddString(BMR_ACTION_ITEMS_MOVED					 	, "BMR hat <<3>>x |t16:16:<<2>>|t<<1>> <<4>> verlagert.", 1)
 SafeAddString(BMR_ACTION_ITEMS_NOT_MOVED					, "BMR konnte keine <<3>>x |t16:16:<<2>>|t<<1>> <<4>> verlagern.", 1)
 SafeAddString(BMR_ACTION_CURRENCY_SUMMARY					, "BMR hat <<1>> <<2>> verlagert.", 1)
+
+SafeAddString(BMR_ACTION_HAS_MOVED							, "BMR hat verlagert ", 1)
+SafeAddString(BMR_ACTION_CURRENCY_MOVED_TO2				, "in die Bank", 1)
+SafeAddString(BMR_ACTION_CURRENCY_MOVED_TO3				, "in das Inventar", 1)
+
 SafeAddString(BMR_ACTION_ITEMS_MOVED_TO1					, "in das Inventar", 1)
 SafeAddString(BMR_ACTION_ITEMS_MOVED_TO2					, "in die Bank", 1)
 SafeAddString(BMR_ACTION_ITEMS_MOVED_TO6					, "in die Bank", 1)

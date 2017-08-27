@@ -106,6 +106,11 @@ SafeAddString(BMR_ACTION_PUSH_BOTH							, "Mettre dans les deux banques", 1)
 SafeAddString(BMR_ACTION_ITEMS_MOVED						, "BMR a déplacé <<3>>x |t16:16:<<2>>|t<<1>> <<4>>", 1)
 SafeAddString(BMR_ACTION_ITEMS_NOT_MOVED					, "BMR n'a pas déplacé <<3>>x |t16:16:<<2>>|t<<1>> <<4>>", 1)
 SafeAddString(BMR_ACTION_CURRENCY_SUMMARY					, "BMR a déplacé <<1>> <<2>>", 1)
+
+SafeAddString(BMR_ACTION_HAS_MOVED							, "BMR a déplacé ", 1)
+SafeAddString(BMR_ACTION_CURRENCY_MOVED_TO2				, "en banque", 1)
+SafeAddString(BMR_ACTION_CURRENCY_MOVED_TO3				, "vers l'inventaire", 1)
+
 SafeAddString(BMR_ACTION_ITEMS_MOVED_TO1					, "vers l'inventaire", 1)
 SafeAddString(BMR_ACTION_ITEMS_MOVED_TO2					, "en banque", 1)
 SafeAddString(BMR_ACTION_ITEMS_MOVED_TO6					, "en banque", 1)

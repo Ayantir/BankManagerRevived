@@ -30,7 +30,7 @@ local db
 local ADDON_NAME					= "BankManagerRevived"
 local displayName					= "|c3366FFBank|r Manager |c990000Revived|r"
 local ADDON_AUTHOR				= "Ayantir & SnowmanDK"
-local ADDON_VERSION				= "10"
+local ADDON_VERSION				= "10.1"
 local ADDON_WEBSITE				= "http://www.esoui.com/downloads/info753-BankManagerRevived.html"
 local isBanking					= false
 local actualProfile				= 1
@@ -1011,6 +1011,9 @@ local function moveCurrency(ruleName, currencyType)
    local currentCurrencyInBank = GetBankedCurrencyAmount(currencyType)
 	
 	local inverted = db.profiles[actualProfile].rules[ruleName].keepInBank
+	local currencyActionDone
+	local currencyAmountMoved
+	local actionDone
 	
 	if inverted then
 		-- Do I need to pull or push? If Inverted, addon push to inventory and pull from inventory
@@ -1018,15 +1021,25 @@ local function moveCurrency(ruleName, currencyType)
 		local pullCurrency = db.profiles[actualProfile].rules[ruleName].qtyToPull > 0 and currentCurrencyInBank < db.profiles[actualProfile].rules[ruleName].qtyToPull and currentCurrencyInInventory > 0
 		
 		if pullCurrency then
-			local currencyToDeposit = db.profiles[actualProfile].rules[ruleName].qtyToPull - currentCurrencyInBank
-			currencyToDeposit = math.min(currencyToDeposit, currentCurrencyInInventory)
+			currencyAmountMoved = db.profiles[actualProfile].rules[ruleName].qtyToPull - currentCurrencyInBank
+			currencyAmountMoved = math.min(currencyAmountMoved, currentCurrencyInInventory)
 			
-			DepositCurrencyIntoBank(currencyType, currencyToDeposit)
-			PrintCurrencyToBank(currencyType, currencyToDeposit)	
+			if currencyAmountMoved > 0 then
+				DepositCurrencyIntoBank(currencyType, currencyAmountMoved)
+				if db.profiles[actualProfile].detailledDisplay then
+					PrintCurrencyToBank(currencyType, currencyAmountMoved)
+				end
+				actionDone = ACTION_PUSH
+			end
 		elseif pushCurrency then
-			local currencyToWithdraw = currentCurrencyInBank - db.profiles[actualProfile].rules[ruleName].qtyToPush		
-			WithdrawCurrencyFromBank(currencyType, currencyToWithdraw)
-			PrintCurrencyToBag(currencyType, currencyToWithdraw)
+			currencyAmountMoved = currentCurrencyInBank - db.profiles[actualProfile].rules[ruleName].qtyToPush		
+			if currencyAmountMoved > 0 then
+				WithdrawCurrencyFromBank(currencyType, currencyAmountMoved)
+				if db.profiles[actualProfile].detailledDisplay then
+					PrintCurrencyToBag(currencyType, currencyAmountMoved)
+				end
+				actionDone = ACTION_PULL
+			end
 		end
 	else
 		-- Do I need to pull or push?
@@ -1034,25 +1047,57 @@ local function moveCurrency(ruleName, currencyType)
 		local pullCurrency = db.profiles[actualProfile].rules[ruleName].qtyToPull > 0 and currentCurrencyInInventory < db.profiles[actualProfile].rules[ruleName].qtyToPull and currentCurrencyInBank > 0
 		
 		if pullCurrency then
-			local currencyToWithdraw = db.profiles[actualProfile].rules[ruleName].qtyToPull - currentCurrencyInInventory
-			currencyToWithdraw = math.min(currencyToWithdraw, currentCurrencyInBank)
-			
-			WithdrawCurrencyFromBank(currencyType, currencyToWithdraw)
-			PrintCurrencyToBag(currencyType, currencyToWithdraw)	
+			currencyAmountMoved = db.profiles[actualProfile].rules[ruleName].qtyToPull - currentCurrencyInInventory
+			currencyAmountMoved = math.min(currencyAmountMoved, currentCurrencyInBank)
+			if currencyAmountMoved > 0 then
+				WithdrawCurrencyFromBank(currencyType, currencyAmountMoved)
+				if db.profiles[actualProfile].detailledDisplay then
+					PrintCurrencyToBag(currencyType, currencyAmountMoved)
+				end
+				actionDone = ACTION_PULL
+			end
 		elseif pushCurrency then
-			local currencyToDeposit = currentCurrencyInInventory - db.profiles[actualProfile].rules[ruleName].qtyToPush		
-			DepositCurrencyIntoBank(currencyType, currencyToDeposit)
-			PrintCurrencyToBank(currencyType, currencyToDeposit)
+			currencyAmountMoved = currentCurrencyInInventory - db.profiles[actualProfile].rules[ruleName].qtyToPush		
+			if currencyAmountMoved > 0 then
+				DepositCurrencyIntoBank(currencyType, currencyAmountMoved)
+				if db.profiles[actualProfile].detailledDisplay then
+					PrintCurrencyToBank(currencyType, currencyAmountMoved)
+				end
+				actionDone = ACTION_PUSH
+			end
 		end
 	end
+	
+	return actionDone, currencyAmountMoved
 
 end
 
 -- Move currencies
 local function moveCurrencies()
-	moveCurrency("currency" .. CURT_MONEY, CURT_MONEY)
-	moveCurrency("currency" .. CURT_TELVAR_STONES, CURT_TELVAR_STONES)
-	moveCurrency("currency" .. CURT_ALLIANCE_POINTS, CURT_ALLIANCE_POINTS)
+	
+	local moves = {}
+	local amounts = {}
+	
+	moves[CURT_MONEY], amounts[CURT_MONEY] = moveCurrency("currency" .. CURT_MONEY, CURT_MONEY)
+	moves[CURT_TELVAR_STONES], amounts[CURT_TELVAR_STONES] = moveCurrency("currency" .. CURT_TELVAR_STONES, CURT_TELVAR_STONES)
+	moves[CURT_ALLIANCE_POINTS], amounts[CURT_ALLIANCE_POINTS] = moveCurrency("currency" .. CURT_ALLIANCE_POINTS, CURT_ALLIANCE_POINTS)
+	moves[CURT_WRIT_VOUCHERS], amounts[CURT_WRIT_VOUCHERS] = moveCurrency("currency" .. CURT_WRIT_VOUCHERS, CURT_WRIT_VOUCHERS)
+	
+	if db.profiles[actualProfile].summary and (NonContiguousCount(moves) > 1 or (not db.profiles[actualProfile].detailledDisplay and NonContiguousCount(moves) == 1)) then
+	
+		local message
+		for currencyType, side in pairs(moves) do
+			if not message then
+				message = GetString(BMR_ACTION_HAS_MOVED) .. zo_strformat(BMR_ACTION_CURRENCY_GSUMMARY, ZO_CurrencyControl_FormatCurrencyAndAppendIcon(amounts[currencyType], true, currencyType), GetString("BMR_ACTION_CURRENCY_MOVED_TO", side))
+			else
+				message = table.concat({message, zo_strformat(BMR_ACTION_CURRENCY_GSUMMARY, ZO_CurrencyControl_FormatCurrencyAndAppendIcon(amounts[currencyType], true, currencyType), GetString("BMR_ACTION_CURRENCY_MOVED_TO", side))}, GetString(SI_LIST_COMMA_SEPARATOR))
+			end
+		end
+		
+		CHAT_SYSTEM:AddMessage(message)
+		
+	end
+	
 end
 
 -- move currencies, prepare items, build push/pull queue and move items
@@ -1791,23 +1836,34 @@ local function LAMSubmenu(subMenu)
 
 	local submenuControls = {}
 	
-	if subMenu == "gold" then
+	if subMenu == "currencies" then
+		
+		table.insert(submenuControls, {type = "description", text = zo_strformat("<<1>> :", GetString("SI_CURRENCYTYPE", CURT_MONEY))})
 		table.insert(submenuControls, panelCurrencyPush("currency" .. CURT_MONEY))
 		table.insert(submenuControls, panelCurrencyPull("currency" .. CURT_MONEY))
 		table.insert(submenuControls, panelCurrencyNothing("currency" .. CURT_MONEY, CURT_MONEY))
 		table.insert(submenuControls, panelCurrencyKeepInBankInstead("currency" .. CURT_MONEY, CURT_MONEY))
+		table.insert(submenuControls, {type = "texture", image="EsoUI/Art/Miscellaneous/horizontalDivider.dds", imageWidth=510, imageHeight=4})
 		
-	elseif subMenu == "tvstones" then
+		table.insert(submenuControls, {type = "description", text = zo_strformat("<<1>> :", GetString("SI_CURRENCYTYPE", CURT_TELVAR_STONES))})
 		table.insert(submenuControls, panelCurrencyPush("currency" .. CURT_TELVAR_STONES))
 		table.insert(submenuControls, panelCurrencyPull("currency" .. CURT_TELVAR_STONES))
 		table.insert(submenuControls, panelCurrencyNothing("currency" .. CURT_TELVAR_STONES, CURT_TELVAR_STONES))
 		table.insert(submenuControls, panelCurrencyKeepInBankInstead("currency" .. CURT_TELVAR_STONES, CURT_TELVAR_STONES))
-	
-	elseif subMenu == "ap" then
+		table.insert(submenuControls, {type = "texture", image="EsoUI/Art/Miscellaneous/horizontalDivider.dds", imageWidth=510, imageHeight=4})
+		
+		table.insert(submenuControls, {type = "description", text = zo_strformat("<<1>> :", GetString("SI_CURRENCYTYPE", CURT_ALLIANCE_POINTS))})
 		table.insert(submenuControls, panelCurrencyPush("currency" .. CURT_ALLIANCE_POINTS))
 		table.insert(submenuControls, panelCurrencyPull("currency" .. CURT_ALLIANCE_POINTS))
 		table.insert(submenuControls, panelCurrencyNothing("currency" .. CURT_ALLIANCE_POINTS, CURT_ALLIANCE_POINTS))
 		table.insert(submenuControls, panelCurrencyKeepInBankInstead("currency" .. CURT_ALLIANCE_POINTS, CURT_ALLIANCE_POINTS))
+		table.insert(submenuControls, {type = "texture", image="EsoUI/Art/Miscellaneous/horizontalDivider.dds", imageWidth=510, imageHeight=4})
+		
+		table.insert(submenuControls, {type = "description", text = zo_strformat("<<1>> :", GetString("SI_CURRENCYTYPE", CURT_WRIT_VOUCHERS))})
+		table.insert(submenuControls, panelCurrencyPush("currency" .. CURT_WRIT_VOUCHERS))
+		table.insert(submenuControls, panelCurrencyPull("currency" .. CURT_WRIT_VOUCHERS))
+		table.insert(submenuControls, panelCurrencyNothing("currency" .. CURT_WRIT_VOUCHERS, CURT_WRIT_VOUCHERS))
+		table.insert(submenuControls, panelCurrencyKeepInBankInstead("currency" .. CURT_WRIT_VOUCHERS, CURT_WRIT_VOUCHERS))
 	
 	-- Traits
 	elseif subMenu == "traits" then
@@ -2150,9 +2206,7 @@ local function buildLAMPanel()
 	actualProfile = tonumber(db.actualProfile)
 	
 	-- Creating LAM optionPanel following the rules
-	local goldSubmenuControls = LAMSubmenu("gold")
-	local tvstonesSubmenuControls = LAMSubmenu("tvstones")
-	local apSubmenuControls = LAMSubmenu("ap")
+	local currenciesSubmenuControls = LAMSubmenu("currencies")
 	local traitSubmenuControls = LAMSubmenu("traits")
 	local styleSubmenuControls = LAMSubmenu("styles")
 	local blacksmithingSubmenuControls = LAMSubmenu("blacksmithing")
@@ -2314,18 +2368,8 @@ local function buildLAMPanel()
 		},
 		{
 			type = "submenu",
-			name = zo_strformat(GetString("SI_CURRENCYTYPE", CURT_MONEY)),
-			controls = goldSubmenuControls,
-		},
-		{
-			type = "submenu",
-			name = zo_strformat(GetString("SI_CURRENCYTYPE", CURT_TELVAR_STONES)),
-			controls = tvstonesSubmenuControls,
-		},
-		{
-			type = "submenu",
-			name = zo_strformat(GetString("SI_CURRENCYTYPE", CURT_ALLIANCE_POINTS)),
-			controls = apSubmenuControls,
+			name = zo_strformat(GetString(SI_INVENTORY_CURRENCIES)),
+			controls = currenciesSubmenuControls,
 		},
 		{
 			type = "submenu",

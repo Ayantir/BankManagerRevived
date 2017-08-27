@@ -110,6 +110,12 @@ local lang = {
 	BMR_ACTION_ITEMS_MOVED						= "BMR has moved <<3>>x |t16:16:<<2>>|t<<1>> <<4>>",
 	BMR_ACTION_ITEMS_NOT_MOVED					= "BMR didn't moved <<3>>x |t16:16:<<2>>|t<<1>> <<4>>",
 	BMR_ACTION_CURRENCY_SUMMARY				= "BMR has moved <<1>> <<2>>",
+	BMR_ACTION_CURRENCY_GSUMMARY				= "<<1>> <<2>>",
+	
+	BMR_ACTION_HAS_MOVED							= "BMR has moved ",
+	BMR_ACTION_CURRENCY_MOVED_TO2				= "to the bank",
+	BMR_ACTION_CURRENCY_MOVED_TO3				= "to the bag",
+	
 	BMR_ACTION_ITEMS_MOVED_TO1					= "to the bag",
 	BMR_ACTION_ITEMS_MOVED_TO2					= "to the bank",
 	BMR_ACTION_ITEMS_MOVED_TO6					= "to the bank",

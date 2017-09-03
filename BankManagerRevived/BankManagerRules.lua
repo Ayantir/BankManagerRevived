@@ -1444,7 +1444,8 @@ function BankManagerRules.addFilters()
 	ruleName = "MiscLockpick"
 	BankManagerRules.data[ruleName] = {
 		params = {
-			{func = GetItemLinkItemType, funcArgs = BMR_ITEMLINK, values = {ITEMTYPE_LOCKPICK}},
+			{func = GetItemLinkItemType, funcArgs = BMR_ITEMLINK, values = {ITEMTYPE_TOOL}},
+			{func = GetItemLinkQuality, funcArgs = BMR_ITEMLINK, values = {ITEM_QUALITY_NORMAL}},
 		},
 		name = GetString("SI_ITEMTYPE", ITEMTYPE_LOCKPICK),
 		tooltip = GetString("SI_ITEMTYPE", ITEMTYPE_LOCKPICK),
@@ -1495,6 +1496,7 @@ function BankManagerRules.addFilters()
 	BankManagerRules.data[ruleName] = {
 		params = {
 			{func = GetItemLinkItemType, funcArgs = BMR_ITEMLINK, values = {ITEMTYPE_TOOL, ITEMTYPE_CROWN_REPAIR}},
+			{func = GetItemLinkQuality, funcArgs = BMR_ITEMLINK, values = {ITEM_QUALITY_ARCANE, ITEM_QUALITY_MAGIC}},
 		},
 		name = zo_strformat("<<1>> & <<2>>", GetString(SI_REPAIR_KIT_CONFIRM), GetString("SI_ITEMTYPE", ITEMTYPE_CROWN_REPAIR)),
 		tooltip = zo_strformat("<<1>> & <<2>>", GetString(SI_REPAIR_KIT_CONFIRM), GetString("SI_ITEMTYPE", ITEMTYPE_CROWN_REPAIR)),

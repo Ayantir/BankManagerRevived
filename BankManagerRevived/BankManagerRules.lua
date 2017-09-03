@@ -1,5 +1,6 @@
 --[[
 -------------------------------------------------------------------------------
+-- BankManager, by Ayantirgold
 -- BankManager, by Ayantir
 -------------------------------------------------------------------------------
 This software is under : CreativeCommons CC BY-NC-SA 4.0
@@ -1493,8 +1494,7 @@ function BankManagerRules.addFilters()
 	ruleName = "MiscRepair"
 	BankManagerRules.data[ruleName] = {
 		params = {
-			{func = GetItemLinkItemType, funcArgs = BMR_ITEMLINK, values = {ITEMTYPE_TOOL}},
-			{func = GetItemLinkItemType, funcArgs = BMR_ITEMLINK, values = {ITEMTYPE_CROWN_REPAIR}},
+			{func = GetItemLinkItemType, funcArgs = BMR_ITEMLINK, values = {ITEMTYPE_TOOL, ITEMTYPE_CROWN_REPAIR}},
 		},
 		name = zo_strformat("<<1>> & <<2>>", GetString(SI_REPAIR_KIT_CONFIRM), GetString("SI_ITEMTYPE", ITEMTYPE_CROWN_REPAIR)),
 		tooltip = zo_strformat("<<1>> & <<2>>", GetString(SI_REPAIR_KIT_CONFIRM), GetString("SI_ITEMTYPE", ITEMTYPE_CROWN_REPAIR)),

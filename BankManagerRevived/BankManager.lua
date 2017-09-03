@@ -30,7 +30,7 @@ local db
 local ADDON_NAME					= "BankManagerRevived"
 local displayName					= "|c3366FFBank|r Manager |c990000Revived|r"
 local ADDON_AUTHOR				= "Ayantir & SnowmanDK"
-local ADDON_VERSION				= "10.2"
+local ADDON_VERSION				= "10.3"
 local ADDON_WEBSITE				= "http://www.esoui.com/downloads/info753-BankManagerRevived.html"
 local isBanking					= false
 local actualProfile				= 1
@@ -279,7 +279,7 @@ local function BuildWritsItems()
 end
 
 -- Reset all vars when finishing a GBank move
-local function onCloseProcessAtGBank()
+local function OnCloseProcessAtGBank()
 
 	restartFromAtGBank = nil
 	qtyMovedToGBank = 0
@@ -322,24 +322,8 @@ local function IsItemProtected(bagId, slotId)
 	end
 
 	--FCO ItemSaver support
-	if FCOIS then
-		--FCOIS version <1.0.0
-		if FCOIsMarked then
-			local FCOiconsToCheck = {}
-			--Build icons to check table, and don't add the "coin" icon, because these items should be sold
-			for i=1, FCOIS.numVars.gFCONumFilterIcons, 1 do
-				if i ~= FCOIS_CON_ICON_SELL then
-					FCOiconsToCheck[i] = i
-				end
-			end
-			return FCOIsMarked(GetItemInstanceId(bagId, slotId), FCOiconsToCheck)
-		else
-			--FCOIS version 1.0.0 and higher
-			--Check all marker icons but exclude the icon #5 (Coins symbol = item marked to sell) and check dynamic icons if sell is allowed
-			if FCOIS.IsJunkLocked then
-				return FCOIS.IsJunkLocked(bagId, slotId)
-			end
-		end
+	if FCOIS and FCOIS.IsMarked then
+		return FCOIS.IsMarked(bagId, slotId, -1)
 	end
 
 	--FilterIt support
@@ -970,7 +954,7 @@ local function moveItems(atGBank, errorReasonAtGBank)
 				end
 				
 				--d("End of loop")
-				onCloseProcessAtGBank()
+				OnCloseProcessAtGBank()
 				
 			end
 			
@@ -988,7 +972,7 @@ local function moveItems(atGBank, errorReasonAtGBank)
 			restartFromAtGBank = restartFromAtGBank - 1
 			tryMoveSlotsToGBank()
 		elseif errorReasonAtGBank == GUILD_BANK_NO_SPACE_LEFT then -- While we are interacting, other move can be done simultaneously
-			onCloseProcessAtGBank()
+			OnCloseProcessAtGBank()
 		else
 			tryMoveSlotsToGBank()
 		end
@@ -1367,7 +1351,7 @@ local function onCloseGuildBank()
 	checkingGBank = false
 	currentGBank = nil
 	currentGBankName = nil
-	onCloseProcessAtGBank()
+	OnCloseProcessAtGBank()
 	BankManager:SetHidden(true)
 	
 end

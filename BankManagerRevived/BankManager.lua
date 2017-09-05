@@ -30,7 +30,7 @@ local db
 local ADDON_NAME					= "BankManagerRevived"
 local displayName					= "|c3366FFBank|r Manager |c990000Revived|r"
 local ADDON_AUTHOR				= "Ayantir & SnowmanDK"
-local ADDON_VERSION				= "10.4"
+local ADDON_VERSION				= "10.5"
 local ADDON_WEBSITE				= "http://www.esoui.com/downloads/info753-BankManagerRevived.html"
 local isBanking					= false
 local actualProfile				= 1
@@ -381,7 +381,7 @@ local function prepareItem(bagId, slotId, checkingGBank)
 
 	-- Inits
 	if IsItemStolen(bagId, slotId) then return end
-	if IsItemProtected(bagId, slotId) then return end
+	if db.profiles[actualProfile].protected and IsItemProtected(bagId, slotId) then return end
 	
 	local itemLink = GetItemLink(bagId, slotId)
 	

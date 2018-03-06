@@ -233,6 +233,8 @@ BankManagerRules.static.rawStyles = {
 	[ITEMSTYLE_ORG_ABAHS_WATCH] = "|H0:item:76915:30:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h",
 	[ITEMSTYLE_ORG_DARK_BROTHERHOOD] = "|H0:item:79306:30:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h",
 	[ITEMSTYLE_ORG_ORDINATOR] = "|H1:item:81997:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h",
+	[ITEMSTYLE_ENEMY_MINOTAUR] = "|H1:item:81995:30:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h",
+	[ITEMSTYLE_ORG_BUOYANT_ARMIGER] = "|H1:item:121521:30:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h",
 }
 
 -- To display names nicely (even if level 1 got 2 solvents, only 1 is displayed here, but filter works, because not based on this array) itemLink here is not used by filter so it can be a little bit false

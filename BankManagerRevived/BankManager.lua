@@ -30,7 +30,7 @@ local db
 local ADDON_NAME					= "BankManagerRevived"
 local displayName					= "|c3366FFBank|r Manager |c990000Revived|r"
 local ADDON_AUTHOR				= "Ayantir & SnowmanDK"
-local ADDON_VERSION				= "10.5"
+local ADDON_VERSION				= "11"
 local ADDON_WEBSITE				= "http://www.esoui.com/downloads/info753-BankManagerRevived.html"
 local isBanking					= false
 local actualProfile				= 1
@@ -1399,8 +1399,8 @@ local function panelCurrencyNothing(ruleName, currencyType)
 
 	local optionPanel = {
 		type = "checkbox",
-		name = zo_strformat(BMR_CURRENCY_NOTHING, GetString("SI_CURRENCYTYPE", currencyType)),
-		tooltip = zo_strformat(BMR_CURRENCY_NOTHING_TOOLTIP, GetString("SI_CURRENCYTYPE", currencyType)),
+		name = zo_strformat(BMR_CURRENCY_NOTHING, GetCurrencyName(currencyType, false, false)),
+		tooltip = zo_strformat(BMR_CURRENCY_NOTHING_TOOLTIP, GetCurrencyName(currencyType, false, false)),
 		getFunc = function() return db.profiles[actualProfile].rules[ruleName].keepNothing end,
 		setFunc = function(newValue) db.profiles[actualProfile].rules[ruleName].keepNothing = newValue end,
 		default = false,
@@ -1762,7 +1762,7 @@ local function CheckAndAddRule(ruleString, fromLAM)
 		
 end
 
--- Build the ule Writer engine. it permit to the user to write its own rules
+-- Build the Rule Writer engine. it permit to the user to write its own rules
 local function RuleWriterPanel()
 
 	local optionPanel = {
@@ -1822,28 +1822,28 @@ local function LAMSubmenu(subMenu)
 	
 	if subMenu == "currencies" then
 		
-		table.insert(submenuControls, {type = "description", text = zo_strformat("<<1>> :", GetString("SI_CURRENCYTYPE", CURT_MONEY))})
+		table.insert(submenuControls, {type = "description", text = zo_strformat("<<1>> :", GetCurrencyName(CURT_MONEY, false, false))})
 		table.insert(submenuControls, panelCurrencyPush("currency" .. CURT_MONEY))
 		table.insert(submenuControls, panelCurrencyPull("currency" .. CURT_MONEY))
 		table.insert(submenuControls, panelCurrencyNothing("currency" .. CURT_MONEY, CURT_MONEY))
 		table.insert(submenuControls, panelCurrencyKeepInBankInstead("currency" .. CURT_MONEY, CURT_MONEY))
 		table.insert(submenuControls, {type = "texture", image="EsoUI/Art/Miscellaneous/horizontalDivider.dds", imageWidth=510, imageHeight=4})
 		
-		table.insert(submenuControls, {type = "description", text = zo_strformat("<<1>> :", GetString("SI_CURRENCYTYPE", CURT_TELVAR_STONES))})
+		table.insert(submenuControls, {type = "description", text = zo_strformat("<<1>> :", GetCurrencyName(CURT_TELVAR_STONES, false, false))})
 		table.insert(submenuControls, panelCurrencyPush("currency" .. CURT_TELVAR_STONES))
 		table.insert(submenuControls, panelCurrencyPull("currency" .. CURT_TELVAR_STONES))
 		table.insert(submenuControls, panelCurrencyNothing("currency" .. CURT_TELVAR_STONES, CURT_TELVAR_STONES))
 		table.insert(submenuControls, panelCurrencyKeepInBankInstead("currency" .. CURT_TELVAR_STONES, CURT_TELVAR_STONES))
 		table.insert(submenuControls, {type = "texture", image="EsoUI/Art/Miscellaneous/horizontalDivider.dds", imageWidth=510, imageHeight=4})
 		
-		table.insert(submenuControls, {type = "description", text = zo_strformat("<<1>> :", GetString("SI_CURRENCYTYPE", CURT_ALLIANCE_POINTS))})
+		table.insert(submenuControls, {type = "description", text = zo_strformat("<<1>> :", GetCurrencyName(CURT_ALLIANCE_POINTS, false, false))})
 		table.insert(submenuControls, panelCurrencyPush("currency" .. CURT_ALLIANCE_POINTS))
 		table.insert(submenuControls, panelCurrencyPull("currency" .. CURT_ALLIANCE_POINTS))
 		table.insert(submenuControls, panelCurrencyNothing("currency" .. CURT_ALLIANCE_POINTS, CURT_ALLIANCE_POINTS))
 		table.insert(submenuControls, panelCurrencyKeepInBankInstead("currency" .. CURT_ALLIANCE_POINTS, CURT_ALLIANCE_POINTS))
 		table.insert(submenuControls, {type = "texture", image="EsoUI/Art/Miscellaneous/horizontalDivider.dds", imageWidth=510, imageHeight=4})
 		
-		table.insert(submenuControls, {type = "description", text = zo_strformat("<<1>> :", GetString("SI_CURRENCYTYPE", CURT_WRIT_VOUCHERS))})
+		table.insert(submenuControls, {type = "description", text = zo_strformat("<<1>> :", GetCurrencyName(CURT_WRIT_VOUCHERS, false, false))})
 		table.insert(submenuControls, panelCurrencyPush("currency" .. CURT_WRIT_VOUCHERS))
 		table.insert(submenuControls, panelCurrencyPull("currency" .. CURT_WRIT_VOUCHERS))
 		table.insert(submenuControls, panelCurrencyNothing("currency" .. CURT_WRIT_VOUCHERS, CURT_WRIT_VOUCHERS))
